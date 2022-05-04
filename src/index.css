@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  box-sizing: border-box;
+}
+
+.MuiDrawer-root .MuiListItemText-secondary {
+  min-height: 20px;
+  -webkit-line-clamp: 2;
+}
+
+.MuiDrawer-root .MuiListItemText-secondary,
+.MuiDrawer-root .MuiListItemText-primary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.MuiDrawer-root a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.messages-group {
+  max-width: 75%;
+  display: flex;
+}
