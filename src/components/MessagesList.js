@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectChannel,
-  selectChannelsLoading,
   selectSelectedChannel,
 } from '../store/features/channels';
 import Box from '@mui/material/Box';
@@ -13,14 +12,18 @@ import { selectLoggedUserId } from '../store/features/auth';
 
 function MessagesList({ channelId }) {
   const ref = useRef();
+  const last = useRef();
   const channel = useSelector(selectSelectedChannel);
-  const loading = useSelector(selectChannelsLoading);
   const loggedId = useSelector(selectLoggedUserId);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(selectChannel(channelId));
-  }, [channelId, dispatch, loading, channel]);
+    if (last.current !== channelId) {
+      dispatch(selectChannel(channelId));
+      last.current = channelId;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelId]);
 
   if (!channel) {
     return (

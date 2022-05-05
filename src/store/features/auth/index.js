@@ -4,7 +4,7 @@ import { createSliceSelector } from '../../../common/utilities';
 
 const slice = createSlice({
   name: 'auth',
-  initialState: { user: null },
+  initialState: {  },
   reducers: {
     login: (state) => ({
       ...state,

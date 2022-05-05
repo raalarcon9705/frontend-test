@@ -1,13 +1,3 @@
-import { configureStore } from '@reduxjs/toolkit'
-import channelsReducer, { channelsMiddleware } from './features/channels';
-import authReducer, { authMiddleware } from './features/auth';
+import store from './store';
 
-export default configureStore({
-  reducer: {
-    channels: channelsReducer,
-    auth: authReducer
-  },
-  middleware: defaultMiddleware => defaultMiddleware()
-    .prepend(channelsMiddleware)
-    .prepend(authMiddleware)
-});
+export default store;

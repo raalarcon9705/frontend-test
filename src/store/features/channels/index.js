@@ -1,6 +1,6 @@
 import { createEntityAdapter, createListenerMiddleware, createSlice } from '@reduxjs/toolkit'
 import { createMessage, getChannels } from '../../../api/channels';
-import { getBinary, getTimeout, newMessage } from '../../../common/fake';
+import { getBinary, getTimeout, newChannel, newMessage } from '../../../common/fake';
 import { createSliceSelector } from '../../../common/utilities';
 
 const channelsAdapter = createEntityAdapter();
@@ -13,10 +13,16 @@ const slice = createSlice({
       ...state,
       loading: true
     }),
-    loadChannelsSuccess: (state, action) => channelsAdapter.addMany({
-      ...state,
-      loading: false
-    }, action),
+    loadChannelsSuccess: (state, action) => {
+      action = ({
+        ...action,
+        payload: action.payload.map(ch => ({...ch, user: ch.user.id}))
+      })
+      return channelsAdapter.addMany({
+        ...state,
+        loading: false
+      }, action);
+    },
     selectChannel: (state, { payload }) => ({
       ...state,
       selected: payload
@@ -83,6 +89,12 @@ const slice = createSlice({
           }
         }
       }
+    },
+    addChannel: (state, { payload }) => {
+      const channel = newChannel();
+      channel.messages = [];
+      channel.user = payload;
+      return channelsAdapter.addOne(state, channel);
     }
   },
   
@@ -96,6 +108,7 @@ const selectors = channelsAdapter.getSelectors(selectSliceState);
 
 export const {
   loadChannels,
+  loadChannelsSuccess,
   selectChannel,
   addMessage,
   removeMessage,
@@ -117,12 +130,19 @@ export const selectSelectedId = state => selectSliceState(state).selected;
 export const selectSelectedChannel = state => {
   const entities = selectors.selectEntities(state);
   const selected = selectSelectedId(state);
-  return entities[selected];
+  let channel = entities[selected]; 
+  if (channel) {
+    channel = {...channel, user: state.users.entities[channel.user]}
+  }
+  return channel;
 };
-export const {
-  selectAll: selectAllChannels,
-} = selectors;
-
+export const selectAllChannels = state => {
+  const channels = selectors.selectAll(state);
+  return channels.map(ch => ({
+    ...ch,
+    user: state.users.entities[ch.user]
+  }));
+}
 
 listenerMiddleware.startListening({
   actionCreator: loadChannels,
